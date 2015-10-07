@@ -4,7 +4,14 @@
         "password": "lemoose",
         "disk_size": "5000",
         "domain": "",
-        "hostname": "debian-vm"
+        "hostname": "",
+        "ip_addr": "",
+        "ip_netmask": "",
+        "ip_network": "",
+        "ip_bcast": "",
+        "ip_gw": "",
+        "ip_fwid": "",
+        "ip_dns": ""
     },
 
     "builders":
@@ -57,9 +64,19 @@
         {
             "type": "shell",
             "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+            "environment_vars": [
+            	"IP_ADDR={{ user `ip_addr` }}",
+            	"IP_NETMASK={{ user `ip_netmask` }}",
+            	"IP_BCAST={{ user `ip_bcast` }}",
+            	"IP_NETWORK={{ user `ip_network` }}",
+            	"IP_GW={{ user `ip_gw` }}",
+                "IP_FWID={{ user `ip_fwid`}}",
+                "IP_DNS={{ user `ip_dns`}}"
+	    ],
             "scripts": [
                 "scripts/packages.sh",
-                "scripts/cleanup.sh"
+                "scripts/cleanup.sh",
+                "scripts/network.sh"
             ]
         }
     ]
