@@ -1,0 +1,14 @@
+{
+        "user": "provisioning",
+        "password": "provisioning",
+        "disk_size": "5000",
+        "domain": "dev.infra.network",
+        "hostname": "packer-image",
+        "ip_addr": "172.16.10.250",
+        "ip_netmask": "172.16.10.255",
+        "ip_network": "172.16.10.0",
+        "ip_bcast": "172.16.10.255",
+        "ip_gw": "172.16.10.1",
+        "ip_fwid": "172.16.10.0/24",
+        "ip_dns": "8.8.8.8, 8.8.4.4"
+}
