@@ -75,7 +75,7 @@
                 "scripts/packages.sh",
                 "scripts/cleanup.sh",
                 "scripts/network.sh",
-                "scripts/serial.sh",
+                "scripts/kernel.sh",
                 "scripts/salt.sh"
             ]
         }
