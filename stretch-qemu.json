@@ -1,0 +1,84 @@
+{
+    "variables": {
+        "user": "provisioning",
+        "password": "provisioning",
+        "disk_size": "5000",
+        "domain": "",
+        "hostname": "",
+        "ip_addr": "",
+        "ip_netmask": "",
+        "ip_network": "",
+        "ip_bcast": "",
+        "ip_gw": "",
+        "ip_fwid": "",
+        "ip_dns": ""
+    },
+
+    "builders":
+    [
+        {
+            "name": "stretch",
+            "ssh_wait_timeout": "15m",
+            "type": "qemu",
+            "format": "qcow2",
+            "accelerator": "kvm",
+            "disk_interface": "virtio",
+            "headless": "false",
+            "vm_name": "debian-9-image",
+            "disk_size": "{{ user `disk_size`}}",
+            "iso_url": "http://cdimage.debian.org/cdimage/release/9.4.0/amd64/iso-cd/debian-9.4.0-amd64-netinst.iso",
+            "iso_checksum": "345c4e674dc10476e8c4f1571fbcdba4ce9788aa5584c5e2590ab3e89e7bb9acb370536f41a3ac740eb92b6aebe3cb8eb9734874dd1658c68875981b8351bc38",
+            "iso_checksum_type": "sha512",
+
+            "http_directory": "preseed",
+
+            "ssh_username": "{{user `user`}}",
+            "ssh_password": "{{user `password`}}",
+            "shutdown_command": "echo '{{user `password`}}'|sudo -S shutdown -h now",
+
+            "boot_wait": "15s",
+            "boot_command": [
+                   "<esc><wait><wait>",
+                   "install auto <wait>",
+                   "preseed/url=http://{{ .HTTPIP }}:{{ .HTTPPort }}/preseed.cfg <wait>",
+                   "debian-installer=en_US locale=en_US.UTF-8 keymap=us <wait>",
+                   "netcfg/get_hostname={{ user `hostname`}} <wait>",
+                   "netcfg/get_domain={{ user `domain`}} <wait>",
+                   "fb=false debconf/frontend=noninteractive <wait>",
+                   "passwd/user-fullname={{user `user`}} <wait>",
+                   "passwd/user-password={{user `password`}} <wait>",
+                   "passwd/user-password-again={{user `password`}} <wait>",
+                   "passwd/username={{user `user`}} <wait>",
+                   "<enter><wait>"
+            ]
+        }
+    ],
+    "provisioners": [
+        {
+            "type": "file",
+            "source": "scripts/",
+            "destination": "/home/provisioning/"
+        },
+        {
+            "type": "shell",
+            "execute_command": "echo '{{user `password`}}' | {{.Vars}} sudo -E -S bash '{{.Path}}'",
+            "environment_vars": [
+            	"IP_ADDR={{ user `ip_addr` }}",
+            	"IP_NETMASK={{ user `ip_netmask` }}",
+            	"IP_BCAST={{ user `ip_bcast` }}",
+            	"IP_NETWORK={{ user `ip_network` }}",
+            	"IP_GW={{ user `ip_gw` }}",
+                "IP_FWID={{ user `ip_fwid`}}",
+                "IP_DNS={{ user `ip_dns`}}"
+	    ],
+            "scripts": [
+                "scripts/packages.sh",
+                "scripts/cleanup.sh",
+                "scripts/network.sh",
+                "scripts/kernel.sh",
+                "scripts/salt.sh"
+            ]
+        }
+    ]
+}
+
