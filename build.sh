@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Enable logging
-export PACKER_LOG="yes"
-export PACKER_LOG_PATH="build_output.log"
+export PACKER_LOG=1
+export PACKER_LOG_PATH=build-output.log
 export TYPE="${2:-qemu}"
 
 packer validate stretch-$TYPE.json &&
